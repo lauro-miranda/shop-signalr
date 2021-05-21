@@ -31,7 +31,10 @@ namespace ToSoftware.Shop.SignalR.Api.Repositories
                 .FindAsync(a => a.Identification.Equals(identification)))
                 .FirstOrDefaultAsync();
 
-        public async Task DeleteAsync(Customer customer)
-            => await Collection.DeleteOneAsync(x => x.Identification.Equals(customer.Identification));
+        public async Task DeleteAsync(string identification)
+            => await Collection.DeleteOneAsync(x => x.Identification.Equals(identification));
+
+        async Task DeleteAsync(Customer customer)
+            => await DeleteAsync(customer.Identification);
     }
 }

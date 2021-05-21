@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using ToSoftware.Shop.SignalR.Api.Hubs;
 using ToSoftware.Shop.SignalR.Api.Hubs.Contracts;
+using ToSoftware.Shop.SignalR.Api.Messages;
 using ToSoftware.Shop.SignalR.Api.Repositories.Contracts;
 
 namespace ToSoftware.Shop.SignalR.Api.Controllers
@@ -21,14 +22,15 @@ namespace ToSoftware.Shop.SignalR.Api.Controllers
             Repository = repository;
         }
 
-        public async Task<IActionResult> SendMessageAsync([FromBody] string identification, string message)
+        [HttpPost, Route("message")]
+        public async Task<IActionResult> SendMessageAsync([FromBody] MessageRequestMessage requestMessage)
         {
-            var customer = await Repository.FindAsync(identification);
+            var customer = await Repository.FindAsync(requestMessage.Identification);
 
             if (!customer.HasValue)
                 return NoContent();
 
-            await Hub.Clients.Client(customer.Value.ConnectionId).OnMessage(message);
+            await Hub.Clients.Client(customer.Value.ConnectionId).OnMessage(requestMessage.Message);
 
             return Accepted();
         }

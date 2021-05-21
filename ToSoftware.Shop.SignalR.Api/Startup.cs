@@ -3,8 +3,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
+using ToSoftware.Shop.SignalR.Api.Domain;
+using ToSoftware.Shop.SignalR.Api.Domain.Settings;
+using ToSoftware.Shop.SignalR.Api.Extensions;
 using ToSoftware.Shop.SignalR.Api.Hubs;
+using ToSoftware.Shop.SignalR.Api.Repositories;
+using ToSoftware.Shop.SignalR.Api.Repositories.Contracts;
 
 namespace ToSoftware.Shop.SignalR.Api
 {
@@ -21,18 +25,15 @@ namespace ToSoftware.Shop.SignalR.Api
         {
             services.AddMvc();
 
-            services.AddScoped<IUser, User>();
+            services.AddScoped<IUser, User>()
+                .AddTransient<ICustomerRepository, CustomerRepository>();
             services.Configure<NoSQLSettings>(Configuration.GetSection(nameof(NoSQLSettings)));
+
+            services.AddJWTAuthentication(Configuration.GetSection("JTWSettings:Secret").Value);
 
             services.AddHttpContextAccessor();
 
             services.AddCors();
-
-            services.AddSignalR(op =>
-            {
-                op.EnableDetailedErrors = true;
-                op.MaximumReceiveMessageSize = null;
-            });
 
             services
                 .AddSignalR()
@@ -54,11 +55,15 @@ namespace ToSoftware.Shop.SignalR.Api
 
             app.UseRouting();
 
+            app.UseAuthentication();
+
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
 
-                endpoints.MapHub<ShopHub>($"/{nameof(ShopHub)}");
+                endpoints.MapHub<ShopHub>("/ShopHub");
             });
         }
     }

@@ -9,5 +9,7 @@ namespace ToSoftware.Shop.SignalR.Api.Repositories.Contracts
         Task<Maybe<Customer>> FindAsync(string identification);
 
         Task CreateOrUpdateAsync(Customer customer);
+
+        Task DeleteAsync(string identification);
     }
 }

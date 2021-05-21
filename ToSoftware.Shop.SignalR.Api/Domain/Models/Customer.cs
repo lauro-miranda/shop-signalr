@@ -4,7 +4,14 @@ namespace ToSoftware.Shop.SignalR.Api.Domain.Models
 {
     public class Customer
     {
-        public Guid Code { get; set; }
+        public Customer(string identification, string connectionId)
+        {
+            Id = Guid.NewGuid();
+            Identification = identification;
+            ConnectionId = connectionId;
+        }
+
+        public Guid Id { get; set; }
 
         public string Identification { get; set; }
 
