@@ -6,6 +6,6 @@ namespace ToSoftware.Shop.SignalR.Api.Controllers.Default
     public class MeController : Controller
     {
         [HttpGet, Route("")]
-        public IActionResult Get() => Ok(new { name = "shop customers", version = "1.0" });
+        public IActionResult Get() => Ok(new { name = "shop hub", version = "1.0" });
     }
 }
